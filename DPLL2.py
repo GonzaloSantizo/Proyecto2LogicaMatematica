@@ -61,7 +61,7 @@ def parse_formula(formula_str):
     return symbols, clauses
 
 # Example formula string
-formula_str = "{{-p, -r, -s}, {-q, -p, -s}}"
+formula_str = "{{-p, -q, -r}, {q, -r, p}, {-p, q, r}}"
 
 symbols, clauses = parse_formula(formula_str)
 model = []
