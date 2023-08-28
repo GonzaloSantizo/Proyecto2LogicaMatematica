@@ -1,5 +1,5 @@
 def parse_literal(literal_str):
-    if literal_str.startswith("¬"):
+    if literal_str.startswith("-"):
         variable = literal_str[1:]
         value = False
     else:
@@ -8,12 +8,12 @@ def parse_literal(literal_str):
     return variable, value
 
 def parse_clause(clause_str):
-    literals = clause_str.split(",")
+    literals = clause_str.split(", ")
     return [parse_literal(literal.strip()) for literal in literals]
 
 def parse_formula(formula_str):
-    clauses = formula_str.split(";")
-    return [parse_clause(clause.strip()) for clause in clauses]
+    clauses = formula_str.split(", ")
+    return [parse_clause(clause.strip("{ }")) for clause in clauses]
 
 def evaluate_clause(clause, assignment):
     for variable, value in clause:
@@ -47,8 +47,8 @@ def brute_force_satisfiability(formula):
             return True, assignment
     return False, None
 
-# Example input: "{{p, q}, {q, s}, {p, s}, {q, s}}"
-formula_str = "{{p, q}, {q, s}, {p, s}, {q, s}}"
+# Example input: "{{-p, -q}, {q, -s}, {-p, s}, {-q, s}}"
+formula_str = "{{p, r, s}, {q, p, s}}"
 formula = parse_formula(formula_str)
 
 satisfiable, assignment = brute_force_satisfiability(formula)
