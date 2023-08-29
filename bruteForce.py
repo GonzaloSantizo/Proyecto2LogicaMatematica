@@ -33,7 +33,8 @@ formula2 = [[2, 1, -1]]
 formula3 = [[-1, -3,-4], [-2, -1,-4]]
 formula4 = [[-1,-2], [2,-4], [-2,4], [-2,4]]
 formula5 = [[-1,-2,-4], [2,-4,1], [-1,2,3]]
-formulas = [formula1, formula2, formula3, formula4, formula5]
+formula6 = [[3], [-2,-3], [-1,2,-3], [2]]
+formulas = [formula1, formula2, formula3, formula4, formula5, formula6]
 
 for idx, formula in enumerate(formulas, start=1):
     print(f"Formula {idx}:")
