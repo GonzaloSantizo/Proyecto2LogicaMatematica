@@ -13,8 +13,6 @@ def DPLL(B, I):
     B1 = eliminar_clausulas(B, L)
     B2 = eliminar_ocurrencias_complementarias(B, L)
     I1 = I.copy()
-    print("Valor  " + str(ifpositive(L)))
-    print("Variable  " + L)
     I1[positive(L)] = ifpositive(L)
 
     resultado, interpretacion = DPLL(B1, I1)
@@ -65,18 +63,26 @@ def positive(literal):
 def ifpositive(literal):
     menos = "-"
     if menos in literal:
-        return True
-    else:
         return False
+    else:
+        return True
 
 # Ejemplo de uso
-B = [['q', 'p', '-p']]
-I = {}
+formula1 = [['p'], ['-p']]
+formula2 = [['q', 'p', '-p']]
+formula3 = [['p', '-p'], ['q', '-q']]
+formula4 = [['p'], ['q'], ['-p'], ['-q']]
+formula5 = [['p'], ['q'], ['-r'], ['-s']]
+formulas = [formula1, formula2, formula3, formula4, formula5]
 
-resultado, interpretacion = DPLL(B, I)
+for idx, formula in enumerate(formulas, start=1):
 
-if resultado:
-    print("La fórmula es satisfacible.")
-    print("Asignación parcial:", interpretacion)
-else:
-    print("La fórmula es insatisfacible.")
+    print(f"Formula {idx}:")
+    resultado, interpretacion = DPLL(formula, {})
+
+    if resultado:
+        print("La fórmula es satisfacible.")
+        print("Asignación parcial:", interpretacion)
+    else:
+        print("La fórmula es insatisfacible.")
+    print()

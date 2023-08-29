@@ -47,12 +47,24 @@ def brute_force_satisfiability(formula):
             return True, assignment
     return False, None
 
-# Example input: "{{-p, -q}, {q, -s}, {-p, s}, {-q, s}}"
-formula_str = "{{-p, -q}, {q, -s}, {-p, s}, {-q, s}}"
-formula = parse_formula(formula_str)
 
-satisfiable, assignment = brute_force_satisfiability(formula)
-if satisfiable:
-    print("Satisfiable with assignment:", assignment)
-else:
-    print("Unsatisfiable")
+
+# Example input: "{{-p, -q}, {q, -s}, {-p, s}, {-q, s}}"
+formula1 = "{{p}, {-p}}"
+formula2 = "{{q, p, -p}}"
+formula3 = "{{p, -p}, {q, -q}}"
+formula4 = "{{p}, {q}, {-p}, {-q}}"
+formula5 = "{{p}, {q}, {-r}, {-s}}"
+formulas = [formula1, formula2, formula3, formula4, formula5]
+
+for idx, formula in enumerate(formulas, start=1):
+    
+    formula = parse_formula(formula)
+
+    print(f"Formula {idx}:")
+    satisfiable, assignment = brute_force_satisfiability(formula)
+    if satisfiable:
+        print("Satisfacible con asignaciones:", assignment)
+    else:
+        print("Insatisfacible")
+    print()
