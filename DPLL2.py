@@ -1,74 +1,65 @@
-def DPLL(symbols, clauses, model):
-    print("Symbols:", symbols)
-    print("Clauses:", clauses)
-    print("Model:", model)
+def DPLL(B, I):
+    if not B:  # B es vacía
+        return True, I
 
-    if all_clause_satisfied(clauses, model):
-        return model
+    for clause in B:
+        if not clause:  # Disyunción vacía en B
+            return False, None
 
-    if any_clause_unsatisfied(clauses, model):
-        return None
+    L = seleccionar_literal(B, I)
+    if L is None:
+        return False, None
 
-    unassigned_symbol = find_unassigned_symbol(symbols, model)
-    
-    if unassigned_symbol is None:
-        return None
-    
-    # Try assigning the unassigned symbol to true
-    result = DPLL(symbols, simplify(clauses, unassigned_symbol), model + [unassigned_symbol])
-    if result is not None:
-        return result
-    
-    # If assigning true didn't work, try assigning the unassigned symbol to false
-    return DPLL(symbols, simplify(clauses, -unassigned_symbol), model + [-unassigned_symbol])
+    B1 = eliminar_clausulas(B, L)
+    B2 = eliminar_ocurrencias_complementarias(B, L)
+    I1 = I.copy()
+    I1[abs(L)] = L > 0
 
-def all_clause_satisfied(clauses, model):
-    return all(any(lit in model for lit in clause) for clause in clauses)
+    resultado, interpretacion = DPLL(B1, I1)
+    if resultado:
+        return True, interpretacion
 
-def any_clause_unsatisfied(clauses, model):
-    return any(all(lit not in model for lit in clause) for clause in clauses)
+    resultado, interpretacion = DPLL(B2, I)
+    if resultado:
+        return True, interpretacion
 
-def find_unassigned_symbol(symbols, model):
-    for symbol in symbols:
-        if symbol not in model and -symbol not in model:
-            return symbol
+    return False, None
+
+
+def seleccionar_literal(B, I):
+    # Selecciona una literal no asignada en la asignación parcial
+    for clause in B:
+        for literal in clause:
+            if abs(literal) not in I:
+                return literal
+
     return None
 
-def simplify(clauses, literal):
-    return [clause for clause in clauses if literal not in clause]
 
-def parse_formula(formula_str):
-    clauses_str = formula_str.split("}, {")
-    clauses = []
-    symbols = set()
-    
-    for clause_str in clauses_str:
-        clause_str = clause_str.replace("{", "").replace("}", "")
-        literals = clause_str.split(", ")
-        clause = []
-        for literal in literals:
-            if literal.startswith("-"):
-                symbol = "not_" + literal[1:]
-                clause.append(symbol)
-                symbols.add(symbol)
-            else:
-                symbol = literal
-                clause.append(symbol)
-                symbols.add(symbol)
-        if clause:
-            clauses.append(clause)
-    
-    return symbols, clauses
+def eliminar_clausulas(B, L):
+    # Elimina todas las cláusulas que contienen la literal L en B
+    B1 = [clause for clause in B if L not in clause]
+    return B1
 
-# Example formula string
-formula_str = "{{-p, -q, -r}, {q, -r, p}, {-p, q, r}}"
 
-symbols, clauses = parse_formula(formula_str)
-model = []
+def eliminar_ocurrencias_complementarias(B, L):
+    # Elimina las ocurrencias de la literal complementaria de L en B
+    complemento_L = -L
+    B2 = []
+    for clause in B:
+        if complemento_L not in clause:
+            B2.append([l for l in clause if l != L])
+    return B2
 
-solution = DPLL(symbols, clauses, model)
 
-if solution is not None:
-    print("Satisfiable. Model:", solution)
+# Ejemplo de uso
+B = [[1], [1]]
+I = {}
+
+resultado, interpretacion = DPLL(B, I)
+
+if resultado:
+    print("La fórmula es satisfacible.")
+    print("Asignación parcial:", interpretacion)
 else:
-    print("Unsatisfiable.")
+    print("La fórmula es insatisfacible.")
