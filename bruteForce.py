@@ -48,7 +48,7 @@ def brute_force_satisfiability(formula):
     return False, None
 
 # Example input: "{{-p, -q}, {q, -s}, {-p, s}, {-q, s}}"
-formula_str = "{{p, r, s}, {q, p, s}}"
+formula_str = "{{-p, -q}, {q, -s}, {-p, s}, {-q, s}}"
 formula = parse_formula(formula_str)
 
 satisfiable, assignment = brute_force_satisfiability(formula)

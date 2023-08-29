@@ -13,7 +13,9 @@ def DPLL(B, I):
     B1 = eliminar_clausulas(B, L)
     B2 = eliminar_ocurrencias_complementarias(B, L)
     I1 = I.copy()
-    I1[abs(L)] = L > 0
+    print("Valor  " + str(ifpositive(L)))
+    print("Variable  " + L)
+    I1[positive(L)] = ifpositive(L)
 
     resultado, interpretacion = DPLL(B1, I1)
     if resultado:
@@ -30,7 +32,7 @@ def seleccionar_literal(B, I):
     # Selecciona una literal no asignada en la asignación parcial
     for clause in B:
         for literal in clause:
-            if abs(literal) not in I:
+            if positive(literal) not in I:
                 return literal
 
     return None
@@ -44,16 +46,31 @@ def eliminar_clausulas(B, L):
 
 def eliminar_ocurrencias_complementarias(B, L):
     # Elimina las ocurrencias de la literal complementaria de L en B
-    complemento_L = -L
+    complemento_L = '-'+L
     B2 = []
     for clause in B:
         if complemento_L not in clause:
             B2.append([l for l in clause if l != L])
     return B2
 
+# function that turns a "-p" into "p"
+def positive(literal):
+    menos = "-"
+    if menos in literal:
+        nueva_cadena = literal[:literal.index(menos)] + literal[literal.index(menos) + len(menos):]
+        return nueva_cadena
+    else:
+        return literal
+    
+def ifpositive(literal):
+    menos = "-"
+    if menos in literal:
+        return True
+    else:
+        return False
 
 # Ejemplo de uso
-B = [[1], [1]]
+B = [['q', 'p', '-p']]
 I = {}
 
 resultado, interpretacion = DPLL(B, I)
