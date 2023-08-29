@@ -1,70 +1,45 @@
-def parse_literal(literal_str):
-    if literal_str.startswith("-"):
-        variable = literal_str[1:]
-        value = False
-    else:
-        variable = literal_str
-        value = True
-    return variable, value
-
-def parse_clause(clause_str):
-    literals = clause_str.split(", ")
-    return [parse_literal(literal.strip()) for literal in literals]
-
-def parse_formula(formula_str):
-    clauses = formula_str.split(", ")
-    return [parse_clause(clause.strip("{ }")) for clause in clauses]
-
-def evaluate_clause(clause, assignment):
-    for variable, value in clause:
-        if variable not in assignment:
+def evaluate_clause(clause, assignment, var_to_letter):
+    for literal in clause:
+        variable = abs(literal)
+        value = literal > 0  # True if positive, False if negative
+        variable_letter = var_to_letter[variable]
+        if variable_letter not in assignment:
             continue
-        if assignment[variable] == value:
+        if assignment[variable_letter] == value:
             return True
     return False
 
-def evaluate_formula(formula, assignment):
+def evaluate_formula(formula, assignment, var_to_letter):
     for clause in formula:
-        if not evaluate_clause(clause, assignment):
+        if not evaluate_clause(clause, assignment, var_to_letter):
             return False
     return True
 
-def brute_force_satisfiability(formula):
-    variables = set()
-    for clause in formula:
-        for variable, _ in clause:
-            variables.add(variable)
-    num_variables = len(variables)
-
-    variable_list = list(variables)
-    variable_index_map = {variable: index for index, variable in enumerate(variable_list)}
-
+def brute_force_satisfiability(formula, var_to_letter):
+    num_variables = max(abs(literal) for clause in formula for literal in clause)
     for i in range(2 ** num_variables):
         assignment = {}
-        for j, variable in enumerate(variable_list):
-            assignment[variable] = bool((i >> j) & 1)
-        if evaluate_formula(formula, assignment):
+        for j in range(num_variables):
+            variable_letter = var_to_letter[j + 1]
+            assignment[variable_letter] = bool((i >> j) & 1)
+        if evaluate_formula(formula, assignment, var_to_letter):
             return True, assignment
     return False, None
 
-
-
-# Example input: "{{-p, -q}, {q, -s}, {-p, s}, {-q, s}}"
-formula1 = "{{p}, {-p}}"
-formula2 = "{{q, p, -p}}"
-formula3 = "{{p, -p}, {q, -q}}"
-formula4 = "{{p}, {q}, {-p}, {-q}}"
-formula5 = "{{p}, {q}, {-r}, {-s}}"
+# Example input: {{¬p, ¬q}, {q, ¬s}, {¬p, s}, {¬q, s}}
+var_to_letter = {1: 'p', 2: 'q', 3: 'r', 4: 's'}
+formula1 = [[1], [-1]]
+formula2 = [[2, 1, -1]]
+formula3 = [[-1, -3,-4], [-2, -1,-4]]
+formula4 = [[-1,-2], [2,-4], [-2,4], [-2,4]]
+formula5 = [[-1,-2,-4], [2,-4,1], [-1,2,3]]
 formulas = [formula1, formula2, formula3, formula4, formula5]
 
 for idx, formula in enumerate(formulas, start=1):
-    
-    formula = parse_formula(formula)
-
     print(f"Formula {idx}:")
-    satisfiable, assignment = brute_force_satisfiability(formula)
+    satisfiable, assignment = brute_force_satisfiability(formula, var_to_letter)
     if satisfiable:
-        print("Satisfacible con asignaciones:", assignment)
+        print("Satisfiable with assignment:", assignment)
     else:
-        print("Insatisfacible")
+        print("Unsatisfiable")
     print()
