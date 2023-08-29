@@ -26,7 +26,16 @@ def brute_force_satisfiability(formula, var_to_letter):
             return True, assignment
     return False, None
 
-# Example input: {{¬p, ¬q}, {q, ¬s}, {¬p, s}, {¬q, s}}
+# Example uses:
+Ejemplos = {
+    "Ejemplo1": "p ∧ -p",
+    "Ejemplo2": "q ∨ p ∨ -p",
+    "Ejemplo3": "(-p ∨ -r ∨ -s) ∧ (-q ∨ -p ∨ -s)",
+    "Ejemplo4": "(-p ∨ -q) ∧ (q ∨ -s) ∧ (-p ∨ s) ∧ (-q ∨ s)",
+    "Ejemplo5": "(-p ∨ -q ∨ -r) ∧ (q ∨ -r ∨ p) ∧ (-p ∨ q ∨ r)",
+    "Ejemplo6": "r ∧ (-q ∨ -r) ∧ (-p ∨ q ∨ -r) ∧ q"
+}
+
 var_to_letter = {1: 'p', 2: 'q', 3: 'r', 4: 's'}
 formula1 = [[1], [-1]]
 formula2 = [[2, 1, -1]]
@@ -37,10 +46,13 @@ formula6 = [[3], [-2,-3], [-1,2,-3], [2]]
 formulas = [formula1, formula2, formula3, formula4, formula5, formula6]
 
 for idx, formula in enumerate(formulas, start=1):
-    print(f"Formula {idx}:")
+    print(f"Formula: {Ejemplos['Ejemplo' + str(idx)]}")
+    print()
+
     satisfiable, assignment = brute_force_satisfiability(formula, var_to_letter)
     if satisfiable:
-        print("Satisfiable with assignment:", assignment)
+        print("Satisfatible con asignación parcial:", assignment)
     else:
-        print("Unsatisfiable")
+        print("Insatisfatible")
+    print()
     print()

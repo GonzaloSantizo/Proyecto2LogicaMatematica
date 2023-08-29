@@ -68,16 +68,28 @@ def ifpositive(literal):
         return True
 
 # Ejemplo de uso
+Ejemplos = {
+    "Ejemplo1": "p ∧ -p",
+    "Ejemplo2": "q ∨ p ∨ -p",
+    "Ejemplo3": "(-p ∨ -r ∨ -s) ∧ (-q ∨ -p ∨ -s)",
+    "Ejemplo4": "(-p ∨ -q) ∧ (q ∨ -s) ∧ (-p ∨ s) ∧ (-q ∨ s)",
+    "Ejemplo5": "(-p ∨ -q ∨ -r) ∧ (q ∨ -r ∨ p) ∧ (-p ∨ q ∨ r)",
+    "Ejemplo6": "r ∧ (-q ∨ -r) ∧ (-p ∨ q ∨ -r) ∧ q"
+}
+
 formula1 = [['p'], ['-p']]
 formula2 = [['q', 'p', '-p']]
-formula3 = [['p', '-p'], ['q', '-q']]
-formula4 = [['p'], ['q'], ['-p'], ['-q']]
-formula5 = [['p'], ['q'], ['-r'], ['-s']]
-formulas = [formula1, formula2, formula3, formula4, formula5]
+formula3 = [['-p', '-r', '-s'], ['-q', '-p', '-s']]
+formula4 = [['-p', '-q'], ['q', '-s'], ['-p', 's'], ['-q', 's']]
+formula5 = [['-p', '-q', '-r'], ['q', '-r', 'p'], ['-p', 'q', 'r']]
+formula6 = [['r'], ['-q', '-r'], ['-p', 'q', '-r'], ['q']]
+formulas = [formula1, formula2, formula3, formula4, formula5, formula6]
 
 for idx, formula in enumerate(formulas, start=1):
 
-    print(f"Formula {idx}:")
+    print(f"Formula: {Ejemplos['Ejemplo' + str(idx)]}]")
+    print()
+
     resultado, interpretacion = DPLL(formula, {})
 
     if resultado:
@@ -85,4 +97,5 @@ for idx, formula in enumerate(formulas, start=1):
         print("Asignación parcial:", interpretacion)
     else:
         print("La fórmula es insatisfacible.")
+    print()
     print()
